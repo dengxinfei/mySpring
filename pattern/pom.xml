@@ -4,13 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>myspring</artifactId>
-        <groupId>com.dengxinfei.myspring</groupId>
+        <groupId>com.dxf.myspring</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.dengxinfei.myspring.pattern</groupId>
     <artifactId>myspring-pattern</artifactId>
+
+
 
 
 </project>
