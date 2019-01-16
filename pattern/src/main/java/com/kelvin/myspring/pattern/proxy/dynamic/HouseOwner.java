@@ -8,7 +8,6 @@ package com.kelvin.myspring.pattern.proxy.dynamic;
 public class HouseOwner implements IHouseOwner {
 
     //目标类
-
     @Override
     public void buyHouse() {
         System.out.println("我是房主： 我有买房房源");
@@ -18,5 +17,4 @@ public class HouseOwner implements IHouseOwner {
     public void rentHouse() {
         System.out.println("我是房主： 我有租房房源");
     }
-
 }

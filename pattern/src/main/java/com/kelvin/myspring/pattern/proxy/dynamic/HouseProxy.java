@@ -10,7 +10,6 @@ import java.lang.reflect.Proxy;
  **/
 public class HouseProxy {
 
-
     //动态代理：
     //1. 不需要提前创建好代理类
     //2. 如果目标类发送修改，可以实现动态扩展，更好的支持了开闭原则
@@ -20,5 +19,4 @@ public class HouseProxy {
         //返回动态代理对象
         return Proxy.newProxyInstance(houseOwner.getClass().getClassLoader(), houseOwner.getClass().getInterfaces(), handler);
     }
-
 }

@@ -10,5 +10,4 @@ public interface IHouseOwner {
     void buyHouse();
 
     void rentHouse();
-
 }
