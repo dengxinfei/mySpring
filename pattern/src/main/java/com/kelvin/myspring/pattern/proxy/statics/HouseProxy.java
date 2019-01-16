@@ -19,13 +19,11 @@ public class HouseProxy implements IHouseOwner {
         this.houseOwner = houseOwner;
     }
 
-
     @Override
     public void buyHouse() {
         System.out.println("我是中介：开始帮你买房");
         houseOwner.buyHouse();
         System.out.println("我是中介：我们准备签订买房合同");
-
     }
 
     @Override
