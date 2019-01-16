@@ -1,4 +1,4 @@
-package com.kelvin.myspring.pattern.proxy.dynamic;
+package com.kelvin.myspring.pattern.proxy.custom;
 
 /**
  * @ClassName HouseOwner
