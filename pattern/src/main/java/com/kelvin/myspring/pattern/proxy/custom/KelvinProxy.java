@@ -1,13 +1,16 @@
 package com.kelvin.myspring.pattern.proxy.custom;
 
+import javax.tools.JavaCompiler;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 
 /**
  * @ClassName KelvinProxy
@@ -35,22 +38,39 @@ public class KelvinProxy {
      * @return
      */
     public static Object newProxyInstance(KelvinClassLoader classLoader, Class<?>[] interfaces, IKelvinInvocation handler){
-        //（1）动态生成Java文件
-        methods = interfaces[0].getMethods(); //获取所有的方法
-        String src = generateSrc(interfaces);
-
-        //(2) 将JAVA文件保存到磁盘上
-        String filePath = KelvinProxy.class.getResource("").getPath();
-        File file = new File(filePath + "$KelvinProxy0.java");
         try {
+            //（1）动态生成Java文件
+            methods = interfaces[0].getMethods(); //获取所有的方法
+            String src = generateSrc(interfaces);
+
+            //(2) 将JAVA文件保存到磁盘上
+            String filePath = KelvinProxy.class.getResource("").getPath();
+            System.out.println(filePath);
+            File file = new File(filePath + "$KelvinProxy0.java");
+
             FileWriter fw = new FileWriter(file);
             fw.write(src);
             fw.flush();
             fw.close();
+
+            //(3)把生成的.JAVA文件编译成.CLASS文件
+            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();//获取默认的编译器
+            StandardJavaFileManager manager = compiler.getStandardFileManager(null, null, Charset.defaultCharset());//获取标准的文件管理器
+            Iterable iterable = manager.getJavaFileObjects(file);//读取需要编译的JAVA文件
+            JavaCompiler.CompilationTask task = compiler.getTask(null, manager, null, null, null, iterable);
+            task.call();//开始编译
+            manager.close();
+
+            //(4).CLASS文件加载
+
+            Class proxyClazz = classLoader.findClass(KelvinProxy.class.getPackage().getName() + ".$KelvinProxy0");
+            Constructor c = proxyClazz.getConstructor(IKelvinInvocation.class);
+
+            //(5) 返回动态代理对象
+            return c.newInstance(handler);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -58,7 +78,6 @@ public class KelvinProxy {
         StringBuilder sb = new StringBuilder();
         //（1）构建包路径，构建引用的JAR包
         sb.append("package com.kelvin.myspring.pattern.proxy.custom;" + ln);
-        sb.append("import " + interfaces[0].getName() + ";" + ln);
         sb.append("import java.lang.reflect.Method;" + ln);
 
         //（2）构建类的结构
@@ -74,8 +93,11 @@ public class KelvinProxy {
         sb.append("static{ " + ln);
         sb.append("try{" + ln);
         for(int i = 0; i < methods.length; i++){
-            sb.append("m" + i + " = Class.forName(\""  + interfaces[0].getName() + "\").getMethod(\"" + methods[i].getName() + "\");" + ln);
-
+            if(methods[i].getParameters().length > 0) {
+                sb.append("m" + i + " = Class.forName(\"" + interfaces[0].getName() + "\").getMethod(\"" + methods[i].getName() + "\", Class.forName(\"java.lang.String\"));" + ln);
+            }else {
+                sb.append("m" + i + " = Class.forName(\"" + interfaces[0].getName() + "\").getMethod(\"" + methods[i].getName() + "\", new Class[]{});" + ln);
+            }
         }
         sb.append("}catch(NoSuchMethodException var2){" + ln);
         sb.append("throw new NoSuchMethodError(var2.getMessage());" + ln);
@@ -98,15 +120,25 @@ public class KelvinProxy {
             if(null != parameters && parameters.length > 0){
                 for(int k = 0; k < parameters.length; k ++){
                     if(k != 0) sb.append(",");
-                    sb.append(parameters[i].getType() + " var" + k);
+                    sb.append(parameters[k].getType().getTypeName() + " var" + k);
                 }
             }
             sb.append("){" + ln);
-            sb.append("try{");
-            sb.append("this.h.invoke(this, m" + i + ", null);"  + ln);
+            sb.append("try{" + ln);
+            if(null == parameters || parameters.length == 0){
+                sb.append("this.h.invoke(this, m" + i + ", null);"  + ln);
+            }else{
+                String params = "";
+                for(int k = 0; k < parameters.length; k++){
+                    if(k != 0) params = "," + params;
+                    params = params + " var" + k;
+                }
+                sb.append("this.h.invoke(this, m" + i + ", new Object[]{" + params + "});"  + ln);
+            }
+
             sb.append("}catch(Throwable e){" + ln);
             sb.append("e.printStackTrace();" + ln);
-            sb.append("}");
+            sb.append("}" + ln);
             sb.append("}" + ln);
         }
         sb.append("}");

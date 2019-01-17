@@ -9,8 +9,15 @@ import java.lang.reflect.Method;
  **/
 public class CustomInvocation implements IKelvinInvocation {
 
+    private Object realObj;
+
+    public CustomInvocation(Object realObj){
+        this.realObj = realObj;
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return null;
+        Object result = method.invoke(realObj, args);
+        return result;
     }
 }

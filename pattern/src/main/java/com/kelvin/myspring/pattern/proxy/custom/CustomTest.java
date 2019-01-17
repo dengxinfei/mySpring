@@ -8,8 +8,11 @@ package com.kelvin.myspring.pattern.proxy.custom;
 public class CustomTest {
 
     public static void main(String[] args) {
-        Object proxy = KelvinProxy.newProxyInstance(new KelvinClassLoader(), new Class[]{IHouseOwner.class}, new CustomInvocation());
+        IKelvinInvocation invocation = new CustomInvocation(new HouseOwner());
 
+        IHouseOwner proxy = (IHouseOwner)KelvinProxy.newProxyInstance(new KelvinClassLoader(), new Class[]{IHouseOwner.class}, invocation);
+        proxy.buyHouse();
+        proxy.rentHouse("三室两厅");
 
     }
 }
