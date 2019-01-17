@@ -27,7 +27,7 @@ public class $Demo implements IHouseOwner {
 
     public void rentHouse(String var1, Integer var2, String var3) {
         try {
-            this.h.invoke(this, m1, new Object[]{var1, var2});
+            this.h.invoke(this, m1, new Object[]{var1, var2, var3});
         } catch (Throwable var4) {
             var4.printStackTrace();
         }
@@ -37,7 +37,7 @@ public class $Demo implements IHouseOwner {
     static {
         try {
             m0 = Class.forName("com.kelvin.myspring.pattern.proxy.custom.IHouseOwner").getMethod("buyHouse");
-            m1 = Class.forName("com.kelvin.myspring.pattern.proxy.custom.IHouseOwner").getMethod("rentHouse", Class.forName("java.lang.String"), Class.forName("java.lang.Integer"));
+            m1 = Class.forName("com.kelvin.myspring.pattern.proxy.custom.IHouseOwner").getMethod("rentHouse", Class.forName("java.lang.String"), Class.forName("java.lang.Integer"), Class.forName("java.lang.String"));
         } catch (NoSuchMethodException var1) {
             throw new NoSuchMethodError(var1.getMessage());
         } catch (ClassNotFoundException var2) {
