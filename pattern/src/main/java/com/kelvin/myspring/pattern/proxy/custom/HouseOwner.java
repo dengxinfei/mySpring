@@ -14,8 +14,8 @@ public class HouseOwner implements IHouseOwner {
     }
 
     @Override
-    public void rentHouse(String name, Integer number) {
+    public void rentHouse(String name, Integer number, String str) {
         System.out.println("我是房主： 我有租房房源");
-        System.out.println("我是房主： 你想要的房型是：" + name + "--数量是：" + number);
+        System.out.println("我是房主： 你想要的房型是：" + name + "--数量是：" + number + "--" + str);
     }
 }

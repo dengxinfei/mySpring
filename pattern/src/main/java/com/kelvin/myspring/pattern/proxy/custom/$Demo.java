@@ -25,7 +25,7 @@ public class $Demo implements IHouseOwner {
 
     }
 
-    public void rentHouse(String var1, Integer var2) {
+    public void rentHouse(String var1, Integer var2, String var3) {
         try {
             this.h.invoke(this, m1, new Object[]{var1, var2});
         } catch (Throwable var4) {
