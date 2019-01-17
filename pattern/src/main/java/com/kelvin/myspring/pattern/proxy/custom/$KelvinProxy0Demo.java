@@ -16,9 +16,9 @@ public class $KelvinProxy0Demo implements IHouseOwner {
         this.h = var1;
     }
 
-    public void rentHouse(String var1) {
+    public void rentHouse(String var1, Integer var2) {
         try {
-            this.h.invoke(this, m0, new Object[]{var1});
+            this.h.invoke(this, m0, new Object[]{var1, var2});
         } catch (Throwable var3) {
             var3.printStackTrace();
         }

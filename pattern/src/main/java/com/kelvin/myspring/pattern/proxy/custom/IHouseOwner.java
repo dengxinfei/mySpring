@@ -9,5 +9,5 @@ public interface IHouseOwner {
 
     void buyHouse();
 
-    void rentHouse(String name);
+    void rentHouse(String name, Integer num);
 }

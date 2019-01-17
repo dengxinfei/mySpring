@@ -8,8 +8,6 @@ import java.io.FileWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 
 /**
@@ -62,7 +60,6 @@ public class KelvinProxy {
             manager.close();
 
             //(4).CLASS文件加载
-
             Class proxyClazz = classLoader.findClass(KelvinProxy.class.getPackage().getName() + ".$KelvinProxy0");
             Constructor c = proxyClazz.getConstructor(IKelvinInvocation.class);
 
@@ -94,7 +91,17 @@ public class KelvinProxy {
         sb.append("try{" + ln);
         for(int i = 0; i < methods.length; i++){
             if(methods[i].getParameters().length > 0) {
-                sb.append("m" + i + " = Class.forName(\"" + interfaces[0].getName() + "\").getMethod(\"" + methods[i].getName() + "\", Class.forName(\"java.lang.String\"));" + ln);
+                Parameter[] parameters = methods[i].getParameters();
+                String methodParam = "";
+                for(int h = 0; h < parameters.length; h++){
+                    if(h != 0) {
+                        methodParam = methodParam + ", Class.forName(\"" + parameters[h].getType().getName() + "\")";
+                    }else {
+                        methodParam = methodParam + " Class.forName(\"" + parameters[h].getType().getName() + "\")";
+                    }
+                }
+                methodParam = "new Class[]{" + methodParam + "}";
+                sb.append("m" + i + " = Class.forName(\"" + interfaces[0].getName() + "\").getMethod(\"" + methods[i].getName() + "\", " + methodParam + ");" + ln);
             }else {
                 sb.append("m" + i + " = Class.forName(\"" + interfaces[0].getName() + "\").getMethod(\"" + methods[i].getName() + "\", new Class[]{});" + ln);
             }
@@ -105,7 +112,6 @@ public class KelvinProxy {
         sb.append("throw new NoClassDefFoundError(var3.getMessage());" + ln);
         sb.append("}" + ln);//try的结尾
         sb.append("}" + ln);//STATIC的结尾
-
 
         //(5) 构建构造函数
         sb.append("public $KelvinProxy0(IKelvinInvocation h){ " + ln);
@@ -130,8 +136,11 @@ public class KelvinProxy {
             }else{
                 String params = "";
                 for(int k = 0; k < parameters.length; k++){
-                    if(k != 0) params = "," + params;
-                    params = params + " var" + k;
+                    if(k != 0) {
+                        params = params + ", var" + k;
+                    }else {
+                        params = params + "var" + k;
+                    }
                 }
                 sb.append("this.h.invoke(this, m" + i + ", new Object[]{" + params + "});"  + ln);
             }

@@ -69,7 +69,7 @@ public final class $Proxy0 extends Proxy implements IHouseOwner {
 
     static {
         try {
-            m1 = Class.forName("java.lang.Object").getMethod("equals", Class.forName("java.lang.Object"));
+            m1 = Class.forName("java.lang.Object").getMethod("equals", new Class[]{Class.forName("java.lang.Object")});
             m3 = Class.forName("com.kelvin.myspring.pattern.proxy.dynamic.IHouseOwner").getMethod("rentHouse", Class.forName("java.lang.String"));
             m2 = Class.forName("java.lang.Object").getMethod("toString");
             m4 = Class.forName("com.kelvin.myspring.pattern.proxy.dynamic.IHouseOwner").getMethod("buyHouse");
