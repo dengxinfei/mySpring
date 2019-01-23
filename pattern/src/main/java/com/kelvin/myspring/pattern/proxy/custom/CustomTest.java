@@ -13,6 +13,5 @@ public class CustomTest {
         IHouseOwner proxy = (IHouseOwner)KelvinProxy.newProxyInstance(new KelvinClassLoader(), new Class[]{IHouseOwner.class}, invocation);
         proxy.buyHouse();
         proxy.rentHouse("三室两厅", 2, "*********");
-
     }
 }
